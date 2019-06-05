@@ -5,6 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="main.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.0.min.js"></script>
 </head>
 <body>
 	<div id="upload-section">
@@ -19,26 +20,50 @@
 </body>
 
 <script type="text/javascript">
-	document.getElementById('file-upload').onchange = function(event) {
-	   var fileList = inputElement.files[0];
+	inputElement = document.getElementById("file-upload");
+	inputElement.onchange = function(event) {
+	   var file = inputElement.files[0];
+	   readTextFile(file);
 	}
 
 	//https://stackoverflow.com/questions/14446447/how-to-read-a-local-text-file
-	function readTextFile(file)
-	{
-	    var rawFile = new XMLHttpRequest();
-	    rawFile.open("GET", file, false);
-	    rawFile.onreadystatechange = function ()
-	    {
-	        if(rawFile.readyState === 4)
-	        {
-	            if(rawFile.status === 200 || rawFile.status == 0)
-	            {
-	                var allText = rawFile.responseText;
-	            }
-	        }
-	    }
-	    rawFile.send(null);
+	function readTextFile(file) {
+	    var textType = /text.*/;
+
+        if (file.type.match(textType)) {
+           var reader = new FileReader();
+
+           reader.onload = function(e) {
+               var allText = reader.result;
+               pullTopics(allText)
+        	}
+
+           reader.readAsText(file); 
+		}
+	}
+
+	function pullTopics(allText) {
+		var settings = {
+		  "async": true,
+		  "crossDomain": true,
+		  "url": "https://api.meaningcloud.com/topics-2.0",
+		  "method": "POST",
+		  "headers": {
+		    "content-type": "application/x-www-form-urlencoded"
+		  },
+		  "data": {
+		    "key": "ea29c8adee07730287fd0a0b61e88bee",
+		    "lang": "en",
+		    "txt": allText,
+		    "url": "",
+		    "doc": "",
+		    "tt": "a"
+		  }
+		}
+
+		$.ajax(settings).done(function (response) {
+		  console.log(response);
+		});
 	}
 </script>
 
