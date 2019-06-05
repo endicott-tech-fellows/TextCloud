@@ -17,4 +17,29 @@
 	</div>
 
 </body>
+
+<script type="text/javascript">
+	document.getElementById('file-upload').onchange = function(event) {
+	   var fileList = inputElement.files[0];
+	}
+
+	//https://stackoverflow.com/questions/14446447/how-to-read-a-local-text-file
+	function readTextFile(file)
+	{
+	    var rawFile = new XMLHttpRequest();
+	    rawFile.open("GET", file, false);
+	    rawFile.onreadystatechange = function ()
+	    {
+	        if(rawFile.readyState === 4)
+	        {
+	            if(rawFile.status === 200 || rawFile.status == 0)
+	            {
+	                var allText = rawFile.responseText;
+	            }
+	        }
+	    }
+	    rawFile.send(null);
+	}
+</script>
+
 </html>
